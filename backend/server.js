@@ -15,7 +15,7 @@ const endpoint = 'https://api.start.gg/gql/alpha';
 const client = new GraphQLClient(endpoint, {
   headers: {
     //トークン設定
-    authorization: `Bearer 636cb81eb0d745ad8870961b627ab702`,
+    authorization: `Bearer `,
   },
 });
 
@@ -32,15 +32,17 @@ query getTournamentInfoList($gameId1: ID!, $perPage: Int!, $cCode: String!, $sta
     }
   }) {
     nodes {
-      id
+      id 
       name
       countryCode
       startAt
+      endAt
       url(relative: false)
       addrState
       numAttendees
       events {
         numEntrants
+        startAt
       }
       images {
         url
@@ -53,7 +55,7 @@ query getTournamentInfoList($gameId1: ID!, $perPage: Int!, $cCode: String!, $sta
 
 const variables = {
     "cCode": "JP",
-    "perPage": 2,
+    "perPage": 30,
     "startDate": 1682899200,
     "endDate":1685591200,
     "gameId1" : 1386

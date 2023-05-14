@@ -32,6 +32,7 @@ const CalendarHeader = styled.div`
 
 function App() {
 
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -49,32 +50,15 @@ function App() {
       console.error(error);
     }
   };
-
-  const changeTimestampToDate = (timestamp) => {
-    const date = new Date(timestamp * 1000);
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // 月は0から始まるので、1を足す
-    const day = date.getDate();
-
-    return year + "年" + month + "月" + day + "日";
-  }
   return (
-    <div className="App">
-      <h1>Data</h1>
-      <ul>
-        {data.map((tournament) => (
-          <>
-          <li> {changeTimestampToDate(tournament.startAt)}</li>   
-          <img src={tournament.images[0].url} alt="画像の説明" height="400" width="400" />  
-          <li>{tournament.images[0].url} </li>    
-          </>
-        ))}
-      </ul>
+    <div className="App">      
       <CalendarHeader>
         <button onClick={handlePrevMonthClick}>&lt;</button>
         <button onClick={handleNextMonthClick}>&gt;</button>
       </CalendarHeader>
-      <Calendar />
+      <Calendar 
+        tournamentData = {data}
+      />
     </div>
   );
 }

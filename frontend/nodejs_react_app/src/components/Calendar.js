@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useRef } from "react";
 import styled, { keyframes, css } from "styled-components";
 import DayModal from "./DayModal";
+import DayComponent from "./DayComponent";
 import { getCalendarDays } from "../utils/calendarUtils";
 
 const fadeIn = keyframes`
@@ -34,26 +35,30 @@ const CalendarGrid = styled.div`
   margin-top: 10%;
   margin: auto;
 `;
-
+/*
 const Day = styled.div`
   background-color: #eee;  
   text-align: center;
   position: relative;
   font-weight: bold;
-  color: #333;
+
   flex-basis: calc(100% / 7 - 2.5%);
   height:calc(100% / 6 -5%);
   margin-left: 2%;   
   margin-top:1.5%;  
-  border-radius: 8%;  
+  border-radius: 8%;    
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   
   box-shadow: ${(props) =>
     props.currentMonth
       ? `inset 0 -3em 3em rgba(0,0,0,0.1),
-         0 0  0 2px rgb(255,255,255),
-         0.3em 0.3em 1em rgba(0,0,0,0.3)`
+        0 0  0 2px rgb(255,255,255),
+        0.3em 0.3em 1em rgba(0,0,0,0.3)`
       : `inset 0 -3em 3em rgba(0,0,0,0.1),
-         0.3em 0.3em 1em rgba(0,0,0,0.3)`};
+        0.3em 0.3em 1em rgba(0,0,0,0.3)`};
 }
   ${(props) =>
     props.currentMonth &&
@@ -65,10 +70,68 @@ const Day = styled.div`
         z-index: ${props.isModalVisible ? 0 : 10};
       }
     `}
+`;*/
+
+// 画像のスタイル定義
+const DayImage = styled.img`
+  flex: 1;
+  object-fit: cover;
+  max-width: 50%;
+  max-height: 50%;
+  margin: auto;
 `;
+/*
+// Day コンポーネントの定義
+const DayComponent = ({ date, currentMonth, isModalVisible, onMouseOver, onMouseOut}) => {
+  return (
+    <Day currentMonth={currentMonth} isModalVisible={isModalVisible} onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
+      <span>{date}</span>
+      
+    </Day>
+  );
+};
+*/
+
+//全てのトーナメント情報データリストから指定した日のトーナメントデータ情報をリストとして返す。
+function getTournamentList(data, day) {
+
+  const changeTimestampToDate = (startAt,endAt) => {
+    const date1 = new Date(startAt * 1000);    
+    const day1 = date1.getDate();
+    const date2 = new Date(endAt * 1000);    
+    const day2 = date2.getDate();
+
+    const generateRange = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => start + i);
+    return generateRange(day1, day2);
+  }
+
+  // dayと一致するトーナメント情報を詰めるリスト
+  const tournamentList = [];
+
+  //全てのトーナメント情報リストから各トーナメント情報に対して処理
+  data.map((tournament) => {
+    // トーナメントの日付をリストで取得
+    const tournamentDate = changeTimestampToDate(tournament.events[0].startAt, tournament.endAt);
+
+    tournamentDate.map((tmpDay) => {
+      if (tmpDay === day) {
+        tournamentList.push(tournament);
+      }
+    })
+  })
+  return tournamentList;
+}
+
+function getTournamentImageList(tournamentList){
+  const imageList = [];
+  tournamentList.map((tournament) => {
+    imageList.push(tournament.images.url);
+  })
+  return imageList;
+}
 
 //animation: ${fadeIn} 0.5s forwards;
-function Calendar() {
+function Calendar({ tournamentData }) {
   const hoveredDay = useRef(null); // 変更
   const [modalVisible, setModalVisible] = useState(false);
   const [hoverTimeout, setHoverTimeout] = useState(null); // 追加
@@ -78,11 +141,9 @@ function Calendar() {
     y: 0,
   });
 
-  const calendarDays = getCalendarDays(); // 追加
+  console.log(getTournamentList(tournamentData, 6));
 
-  // const currentDate = new Date();
-  // const currentMonth = currentDate.getMonth();
-  // const daysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
+  const calendarDays = getCalendarDays(); // 追加
 
   const handleMouseOver = useCallback(
     (event, day) => {
@@ -133,19 +194,17 @@ function Calendar() {
       </h2>
       <CalendarGrid>
         {calendarDays.map((day, index) => (
-          <Day
+          <DayComponent
             key={index}
+            date={day.day}
             currentMonth={day.currentMonth}
             onMouseOver={(event) => handleMouseOver(event, day.day)}
-            onMouseOut={handleMouseOut}
+            onMouseOut={handleMouseOut}   
+            tournamentList={getTournamentList(tournamentData,day.day)}         
+            imageUrls={getTournamentImageList(getTournamentList(tournamentData,day.day))}  
             isModalVisible={modalVisible && day.day === hoveredDay.current}
-            style={{
-              backgroundColor: day.currentMonth ? "#eee" : "#ddd",
-              color: day.currentMonth ? "#333" : "#999",
-            }}
-          >
-            {day.day}
-          </Day>
+        >           
+        </DayComponent>
         ))}
       </CalendarGrid>
       {modalVisible && (
@@ -156,6 +215,7 @@ function Calendar() {
             hoveredDay.current = null;
           }}
           animationStartPosition={animationStartPosition}
+          tournamentList={getTournamentList(tournamentData, hoveredDay.current)}
         />
       )}
     </CalendarWrapper>

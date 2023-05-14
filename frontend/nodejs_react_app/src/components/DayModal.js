@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import styled, { keyframes } from "styled-components";
 
@@ -21,7 +21,7 @@ const ModalContent = styled.div`
   z-index: 1000;
   padding: 3%;
   background-color: #f8f8f8;
-  border-radius: 2%;
+  border-radius: 15px;
   position: relative;
   height: 90%;
   wieth: 100%;
@@ -29,9 +29,20 @@ const ModalContent = styled.div`
     1s forwards;
 `;
 
+const CloseButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 2em;
+  background: none;
+  color: #333;
+  border: none;
+  cursor: pointer;
+`;
+
 ReactModal.setAppElement("#root");
 
-function DayModal({ day, onClose, animationStartPosition }) {
+function DayModal({ day, onClose, animationStartPosition, tournamentList }) {
   const customModalStyles = {
     overlay: {
       backgroundColor: "rgba(0, 0, 0, 0.5)",
@@ -39,14 +50,15 @@ function DayModal({ day, onClose, animationStartPosition }) {
     // モーダルの枠を指定する感じ？
     content: {
       position: "relative",
-      top: "10%", // 表示するモーダルの中心位置を指定
+      top: "5%", // 表示するモーダルの中心位置を指定
       left: 0, // 表示するモーダルの中心位置を指定
       right: 0,
       left: 0,
       margin: "auto",
       // transform: "translate(-50%, -50%)",
       width: "75%",
-      height: "75%",
+      height: "90%",
+      maxHeight:'calc(100vh - 100px)',
       backgroundColor: "transparent",
       border: "none",
       borderRadius: "none",
@@ -54,6 +66,7 @@ function DayModal({ day, onClose, animationStartPosition }) {
       //boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
       outline: "none",
       transition: "all 1s ease",
+      overflow: 'auto',
     },
   };
 
@@ -63,23 +76,19 @@ function DayModal({ day, onClose, animationStartPosition }) {
       style={customModalStyles}
       onRequestClose={onClose}
     >
-      <ModalContent startPosition={animationStartPosition}>
-        <h2>Day {day}</h2>
-        <p>Information for day {animationStartPosition.y} goes here.</p>
-        <button
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#333",
-            color: "#fff",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginTop: "50vh",
-          }}
-          onClick={onClose}
-        >
-          Close
-        </button>
+      <ModalContent startPosition={animationStartPosition}>      
+          <CloseButton onClick={onClose}>&times;</CloseButton> {/* ここにボタンを追加 */} 
+          <h2>Day {day}</h2>
+          <h1>Data</h1>
+            <ul>
+              {tournamentList.map((tournament) => (
+                <>
+                  <li>{day}</li>
+                  <p>{tournament.name}</p>
+                  {tournament.images[0] != null ? <img src={tournament.images[0].url} alt="画像の説明" height="200" width="200" /> : <p>No Tournament Image</p>}
+                </>
+              ))}
+            </ul>
       </ModalContent>
     </ReactModal>
   );
