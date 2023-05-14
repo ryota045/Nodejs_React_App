@@ -3,6 +3,7 @@ import Calendar from "./components/Calendar";
 import "./App.css";
 import styled from "styled-components";
 import ResponsiveComponent from './components/ResponsiveComponent';
+import Loading from './components/Loading';
 //import { getCalendarDays } from "./utils/calendarUtils";
 
 //const [currentDate, setCurrentDate] = useState(new Date());
@@ -34,7 +35,7 @@ const CalendarHeader = styled.div`
 
 function App() {
 
-
+  const [isLoading, setIsLoading] = useState(true);
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -47,12 +48,15 @@ function App() {
       const response = await fetch('http://localhost:5000/api/data');
       const result = await response.json();
       setData(result.tournaments.nodes);
+      setIsLoading(false);
       console.log("success set Data");
     } catch (error) {
       console.error(error);
     }
   };
   return (
+    isLoading ?
+    <Loading></Loading> :
     <div className="App">      
       <CalendarHeader>
         <button onClick={handlePrevMonthClick}>&lt;</button>
@@ -61,7 +65,7 @@ function App() {
       <ResponsiveComponent 
         tournamentData = {data}
       />
-    </div>
+    </div>    
   );
 }
 

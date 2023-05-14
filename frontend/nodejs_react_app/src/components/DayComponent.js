@@ -80,7 +80,7 @@ const DayComponent = ({ date, currentMonth,tournamentList, isModalVisible, onMou
       isModalVisible={isModalVisible}
       {...(hasTournament && {onMouseOver: onMouseOver})}
       onMouseOut={onMouseOut}  
-      onClick={onClick}
+      {...(hasTournament && {onClick:onClick})}
       hasTournament={hasTournament}
     >
       <p>{date}</p>      

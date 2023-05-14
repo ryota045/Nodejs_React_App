@@ -2,7 +2,7 @@ import styled, {css} from "styled-components";
 
 const TournamentCard = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -14,10 +14,10 @@ const TournamentCard = styled.div`
 const TournamentImage = styled.img`
 ${(props) => (
   props.isMobileView ?
-  `width: 75px;
-  height: 75px;` :
-  `width: 75px;
-  height: 75px;`
+  `width: 90px;
+  height: 90px;` :
+  `width: 125px;
+  height: 125px;`
 )}
 
   border-radius: 15px;
@@ -28,25 +28,32 @@ const TournamentInfo = styled.div`
   display: flex;
   margin-left:5px;
   flex-direction: column;
-  align-self: flex-start;
+  align-self: center;
   text-align: left; 
 `;
 
 const TournamentName = styled.h3`
   margin: 0;
-  font-size: 16px;
+  font-size:${props => (props.isMobileView ?`14px` :`20px`)};
   color: #333;
 `;
 
 const TournamentDetails = styled.p`
   margin: 0;
-  font-size: 14px;
+  font-size: ${props => (
+    props.isMobileView ? 
+    `13px` : `18px`
+  )};
   color: #666;
 `;
 
 const TournamentLink = styled.a`
   color: #007bff;
   text-decoration: none;
+  font-size: ${props => (
+    props.isMobileView ? 
+    `13px` : `18px`
+  )};
   &:hover {
     color: #0056b3;
   }
@@ -60,12 +67,12 @@ const TournamentItem = ({ tournament, isMobileView }) => {
     <TournamentCard>
       <TournamentImage isMobileView={isMobileView} src={imageUrl} alt="" />
       <TournamentInfo>
-        <TournamentName>{tournament.name}</TournamentName>
-        <TournamentDetails>Location: {tournament.addrState}</TournamentDetails>
-        <TournamentDetails>
+        <TournamentName isMobileView={isMobileView}>{tournament.name}</TournamentName>
+        <TournamentDetails isMobileView={isMobileView}>Location: {tournament.addrState}</TournamentDetails>
+        <TournamentDetails isMobileView={isMobileView}>
           Participants: {tournament.numAttendees}
         </TournamentDetails>
-        <TournamentLink href={tournament.url}>Tournament Link</TournamentLink>
+        <TournamentLink isMobileView={isMobileView} href={tournament.url}>Tournament Link</TournamentLink>
       </TournamentInfo>
     </TournamentCard>
   );
