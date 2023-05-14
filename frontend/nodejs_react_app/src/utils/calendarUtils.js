@@ -1,5 +1,5 @@
 export function getCalendarDays() {
-  const currentDate = new Date();
+  const currentDate = new Date(); 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
 
@@ -10,17 +10,19 @@ export function getCalendarDays() {
   const lastDayOfWeek = lastDayOfMonth.getDay();
 
   const daysBefore = [...Array(firstDayOfWeek).keys()].map((i) => {
-    const day = new Date(currentYear, currentMonth, -i);
-    return { day: day.getDate(), currentMonth: false };
+    const currentMonth2 = ( currentMonth == 0 ) ? 12 : currentMonth;
+    const day = new Date(currentYear, currentMonth2-1, -i);
+    return { day: day.getDate(), currentMonth: false , month: currentMonth+1, dayOfWeek: day.getDay()};
   });
 
   const daysAfter = [...Array(6 - lastDayOfWeek).keys()].map((i) => {
     const day = new Date(currentYear, currentMonth + 1, i + 1);
-    return { day: day.getDate(), currentMonth: false };
+    return { day: day.getDate(), currentMonth: false, month: currentMonth+1, dayOfWeek: day.getDay()};
   });
 
   const daysInMonth = [...Array(lastDayOfMonth.getDate()).keys()].map((i) => {
-    return { day: i + 1, currentMonth: true };
+    const day = new Date(currentYear, currentMonth, i + 1);
+    return { day: day.getDate(), currentMonth: true, month: currentMonth+1, dayOfWeek: day.getDay()};
   });
 
   return [...daysBefore.reverse(), ...daysInMonth, ...daysAfter];

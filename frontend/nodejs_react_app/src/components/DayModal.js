@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ReactModal from "react-modal";
 import styled, { keyframes } from "styled-components";
+import TournamentItem from "./TournamentItem";
 
 const fadeIn = (startX, startY) => keyframes`
   0% {
@@ -23,8 +24,9 @@ const ModalContent = styled.div`
   background-color: #f8f8f8;
   border-radius: 15px;
   position: relative;
-  height: 90%;
-  wieth: 100%;
+  height:auto;
+  min-height: 80vh;  //モーダルの最小高さ設定。
+  overflow: auto;
   animation: ${({ startPosition }) => fadeIn(startPosition.x, startPosition.y)}
     1s forwards;
 `;
@@ -53,12 +55,11 @@ function DayModal({ day, onClose, animationStartPosition, tournamentList }) {
       top: "5%", // 表示するモーダルの中心位置を指定
       left: 0, // 表示するモーダルの中心位置を指定
       right: 0,
-      left: 0,
       margin: "auto",
       // transform: "translate(-50%, -50%)",
       width: "75%",
-      height: "90%",
-      maxHeight:'calc(100vh - 100px)',
+      height: "auto",      
+      maxHeight:"calc(100vh - 100px)",
       backgroundColor: "transparent",
       border: "none",
       borderRadius: "none",
@@ -79,13 +80,10 @@ function DayModal({ day, onClose, animationStartPosition, tournamentList }) {
       <ModalContent startPosition={animationStartPosition}>      
           <CloseButton onClick={onClose}>&times;</CloseButton> {/* ここにボタンを追加 */} 
           <h2>Day {day}</h2>
-          <h1>Data</h1>
             <ul>
               {tournamentList.map((tournament) => (
                 <>
-                  <li>{day}</li>
-                  <p>{tournament.name}</p>
-                  {tournament.images[0] != null ? <img src={tournament.images[0].url} alt="画像の説明" height="200" width="200" /> : <p>No Tournament Image</p>}
+                  <TournamentItem tournament={tournament} />
                 </>
               ))}
             </ul>

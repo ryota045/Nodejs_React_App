@@ -19,9 +19,9 @@ const CalendarWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 90vh;
+  height: 94vh;
   width: 100%;
-  background-color: red;
+  background-color: #333;
 `;
 
 const CalendarGrid = styled.div`
@@ -31,66 +31,9 @@ const CalendarGrid = styled.div`
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   width: 80%;
-  height: 80%;
-  margin-top: 10%;
+  height: auto;
   margin: auto;
 `;
-/*
-const Day = styled.div`
-  background-color: #eee;  
-  text-align: center;
-  position: relative;
-  font-weight: bold;
-
-  flex-basis: calc(100% / 7 - 2.5%);
-  height:calc(100% / 6 -5%);
-  margin-left: 2%;   
-  margin-top:1.5%;  
-  border-radius: 8%;    
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  
-  box-shadow: ${(props) =>
-    props.currentMonth
-      ? `inset 0 -3em 3em rgba(0,0,0,0.1),
-        0 0  0 2px rgb(255,255,255),
-        0.3em 0.3em 1em rgba(0,0,0,0.3)`
-      : `inset 0 -3em 3em rgba(0,0,0,0.1),
-        0.3em 0.3em 1em rgba(0,0,0,0.3)`};
-}
-  ${(props) =>
-    props.currentMonth &&
-    css`
-      &:hover {
-        cursor: pointer;
-        border-radius: 3px;
-        animation: ${fadeIn} 0.5s forwards;
-        z-index: ${props.isModalVisible ? 0 : 10};
-      }
-    `}
-`;*/
-
-// 画像のスタイル定義
-const DayImage = styled.img`
-  flex: 1;
-  object-fit: cover;
-  max-width: 50%;
-  max-height: 50%;
-  margin: auto;
-`;
-/*
-// Day コンポーネントの定義
-const DayComponent = ({ date, currentMonth, isModalVisible, onMouseOver, onMouseOut}) => {
-  return (
-    <Day currentMonth={currentMonth} isModalVisible={isModalVisible} onMouseOver={onMouseOver} onMouseOut={onMouseOut}>
-      <span>{date}</span>
-      
-    </Day>
-  );
-};
-*/
 
 //全てのトーナメント情報データリストから指定した日のトーナメントデータ情報をリストとして返す。
 function getTournamentList(data, day) {
@@ -119,6 +62,16 @@ function getTournamentList(data, day) {
       }
     })
   })
+
+  //sort by attendees
+  tournamentList.sort(function(a, b) {
+    if (a.numAttendees > b.numAttendees) {
+      return -1;
+    } else {
+      return 1;
+    }
+  })
+
   return tournamentList;
 }
 
@@ -130,6 +83,26 @@ function getTournamentImageList(tournamentList){
   return imageList;
 }
 
+const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+const WeekdaysStyle = styled.div`
+background-color: skyBlue;  
+text-align: center;
+position: relative;
+font-weight: bold;
+
+flex-basis: calc(100% / 7 - 2.5%);
+height:calc(100% / 6 -5%);
+margin-left: 2%;   
+margin-top:1.5%;  
+margin-bottom:1.5%;
+border-radius: 7px;    
+
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+`;
+
 //animation: ${fadeIn} 0.5s forwards;
 function Calendar({ tournamentData }) {
   const hoveredDay = useRef(null); // 変更
@@ -140,8 +113,6 @@ function Calendar({ tournamentData }) {
     x: 0,
     y: 0,
   });
-
-  console.log(getTournamentList(tournamentData, 6));
 
   const calendarDays = getCalendarDays(); // 追加
 
@@ -165,13 +136,16 @@ function Calendar({ tournamentData }) {
         clearTimeout(hoverTimeout);
       }
 
-      const newTimeout = setTimeout(() => {
-        if (hoveredDay.current === day) {
-          // 変更
-          setModalVisible(true);
-        }
-      }, 1000);
-      setHoverTimeout(newTimeout);
+      if (event.type === 'click') {
+        setModalVisible(true);
+      } else {
+        const newTimeout = setTimeout(() => {
+          if (hoveredDay.current === day) {
+            setModalVisible(true);
+          }
+        }, 700);
+        setHoverTimeout(newTimeout);
+      }
     },
     [hoverTimeout]
   );
@@ -189,10 +163,11 @@ function Calendar({ tournamentData }) {
 
   return (
     <CalendarWrapper>
-      <h2 style={{ marginBottom: "24px", backgroundColor: "red" }}>
-        Game Tournament Calendar
-      </h2>
       <CalendarGrid>
+        {weekdays.map((day) => (
+          <WeekdaysStyle day={day}>{day}</WeekdaysStyle>
+        ))}
+        
         {calendarDays.map((day, index) => (
           <DayComponent
             key={index}
@@ -200,6 +175,7 @@ function Calendar({ tournamentData }) {
             currentMonth={day.currentMonth}
             onMouseOver={(event) => handleMouseOver(event, day.day)}
             onMouseOut={handleMouseOut}   
+            onClick={(event) => handleMouseOver(event, day.day)} // ここを追加
             tournamentList={getTournamentList(tournamentData,day.day)}         
             imageUrls={getTournamentImageList(getTournamentList(tournamentData,day.day))}  
             isModalVisible={modalVisible && day.day === hoveredDay.current}

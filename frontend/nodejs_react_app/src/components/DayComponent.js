@@ -21,7 +21,7 @@ font-weight: bold;
 flex-basis: calc(100% / 7 - 2.5%);
 height:calc(100% / 6 -5%);
 margin-left: 2%;   
-margin-top:1.5%;  
+margin-bottom:1.5%;
 border-radius: 8%;  
 
 box-shadow: ${(props) =>
@@ -34,7 +34,7 @@ box-shadow: ${(props) =>
 }
 
   ${(props) =>
-    props.currentMonth &&
+    (props.currentMonth && props.hasTournament) &&
     css`
       &:hover {
         cursor: pointer;
@@ -45,22 +45,52 @@ box-shadow: ${(props) =>
     `}
 `;
 
+//右上の吹き出しのCSS
+const NotificationBubble = styled.div`
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #666;
+  color: white;
+  padding: 2% 4%;
+  margin:2%;
+  border-radius: 45%; 
+  font-size: 0.75em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  &:after { // 吹き出しの尾部分を作成します
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 0;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #666 transparent transparent transparent;
+    transform: rotate(40deg); // 45度回転
+    transform-origin: top right; // 回転の基点を設定
+  }
+`;
+
 // Day コンポーネントの定義
-const DayComponent = ({ date, currentMonth,tournamentList, isModalVisible, onMouseOver, onMouseOut}) => {
+const DayComponent = ({ date, currentMonth,tournamentList, isModalVisible, onMouseOver, onMouseOut, onClick}) => {
   const tournamentImage = tournamentList.length > 0 ? tournamentList[0].images[0].url : null;
+  const hasTournament = tournamentList.length > 0;
   return (
     <Day 
       currentMonth={currentMonth}
       isModalVisible={isModalVisible}
-      onMouseOver={onMouseOver}
+      {...(hasTournament && {onMouseOver: onMouseOver})}
       onMouseOut={onMouseOut}  
+      onClick={onClick}
+      hasTournament={hasTournament}
     >
       <p>{date}</p>      
       <img src={tournamentImage} style={{ width: '50%', height: 'auto' , borderRadius: '15px'}} />
       {tournamentList.length > 1 && (
-        <div style={{ position: 'absolute', top: 0, right: 0, backgroundColor: 'red', color: 'white' }}>
+        <NotificationBubble>
+        
           +{tournamentList.length - 1}
-        </div>
+        
+        </NotificationBubble>
       )}
     </Day>
   );

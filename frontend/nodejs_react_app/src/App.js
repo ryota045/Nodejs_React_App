@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Calendar from "./components/Calendar";
 import "./App.css";
 import styled from "styled-components";
+import ResponsiveComponent from './components/ResponsiveComponent';
 //import { getCalendarDays } from "./utils/calendarUtils";
 
 //const [currentDate, setCurrentDate] = useState(new Date());
@@ -28,6 +29,7 @@ const CalendarHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 10px;
+  background-color:#333;
 `;
 
 function App() {
@@ -56,7 +58,7 @@ function App() {
         <button onClick={handlePrevMonthClick}>&lt;</button>
         <button onClick={handleNextMonthClick}>&gt;</button>
       </CalendarHeader>
-      <Calendar 
+      <ResponsiveComponent 
         tournamentData = {data}
       />
     </div>
