@@ -14,19 +14,16 @@ const swing = keyframes`
   }
   10% {
     transform: rotate(-12deg);
-  }
-  
+  }  
   15% {
     transform: rotate(-18deg);
-  }
-  
+  }  
   20% {
     transform: rotate(-24deg);
   }
   25% {
     transform: rotate(-30deg);
-  }
-  
+  }  
   30% {
     transform: rotate(-24deg);
   }
@@ -47,19 +44,16 @@ const swing = keyframes`
   }
   60% {
     transform: rotate(12deg);
-  }
-  
+  }  
   65% {
     transform: rotate(18deg);
-  }
-  
+  }  
   70% {
     transform: rotate(20deg);
   }
   75% {
     transform: rotate(24deg);
-  }
-  
+  }  
   80% {
     transform: rotate(24deg);
   }
@@ -78,6 +72,8 @@ const swing = keyframes`
 `;
 const Image = styled.img`
   animation: ${swing} 1s infinite;
+  height:200px;
+  width:200px;
 `;
 
 const Loading = () => {
