@@ -38,7 +38,7 @@ const CalendarHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3%;
+  padding: 2%;
   background-color:red;
 `;
 
@@ -76,8 +76,6 @@ const currentInfo = getCurrentInfo();
     <Loading></Loading> :
     <div className="App">      
       <CalendarHeader>
-        <button onClick={handlePrevMonthClick}>&lt;</button>        
-        <button onClick={handleNextMonthClick}>&gt;</button>
       </CalendarHeader>
       <ResponsiveComponent 
         tournamentData = {data}
@@ -85,5 +83,4 @@ const currentInfo = getCurrentInfo();
     </div>    
   );
 }
-
 export default App;

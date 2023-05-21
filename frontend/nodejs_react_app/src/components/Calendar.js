@@ -114,7 +114,8 @@ function getTournamentList(data, day) {
   //全てのトーナメント情報リストから各トーナメント情報に対して処理
   data.map((tournament) => {
     // トーナメントの日付をリストで取得
-    const tournamentDate = changeTimestampToDate(tournament.events[0].startAt, tournament.endAt);
+    const startAt = tournament.events[0] != null ? tournament.events[0].startAt : tournament.startAt;
+    const tournamentDate = changeTimestampToDate(startAt, tournament.endAt);
 
     tournamentDate.map((tmpDay) => {
       if (tmpDay === day) {
